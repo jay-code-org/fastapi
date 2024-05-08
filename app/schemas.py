@@ -4,8 +4,39 @@ from pydantic import BaseModel, EmailStr
 from uuid import UUID
 from enum import Enum
 
+"""  Base Entity """
 
-# User schemas
+
+class BaseEntity(BaseModel):
+    id: UUID
+    created_at: datetime
+    updated_at: Union[datetime, None] = None
+
+
+""" Status Schemas """
+
+
+class StatusBase(BaseModel):
+    name: str
+
+
+class CreateStatus(StatusBase):
+    pass
+
+
+class UpdateStatus(StatusBase):
+    pass
+
+
+class Status(BaseEntity, StatusBase):
+    pass
+
+    class Config:
+        form_attributes = True
+
+
+""" User Schema """
+
 
 class UserBase(BaseModel):
     full_name: str
@@ -18,7 +49,15 @@ class CreateUser(UserBase):
 
 
 class UpdateUser(UserBase):
-    is_active: bool
+    status_id: UUID
+
+
+class User(BaseEntity, UserBase):
+    email: EmailStr
+    status_id: UUID
+
+    class Config:
+        form_attributes = True
 
 
 class UserLogin(BaseModel):
@@ -26,30 +65,29 @@ class UserLogin(BaseModel):
     password: str
 
 
-class User(UserBase):
-    id: UUID
-    email: EmailStr
-    created_at: datetime
-    updated_at: Union[datetime, None] = None
-    is_active: bool = False
+""" ToDo Category Schemas """
+
+
+class TodoCategoryBase(BaseModel):
+    name: str
+
+
+class CreateTodoCategory(TodoCategoryBase):
+    pass
+
+
+class UpdateTodoCategory(TodoCategoryBase):
+    pass
+
+
+class TodoCategory(BaseEntity, TodoCategoryBase):
+    pass
 
     class Config:
         form_attributes = True
 
 
-# Todo schemas
-
-
-class TodoCategoryEnum(Enum):
-    Sports = "Sports"
-    Coding = "Coding"
-    Coking = "Cooking"
-
-
-class TodoStatusEnum(Enum):
-    Pending = "Pending"
-    Completed = "Completed"
-    Deleted = "Deleted"
+""" ToDo Schemas """
 
 
 class TodoBase(BaseModel):
@@ -58,19 +96,15 @@ class TodoBase(BaseModel):
 
 
 class CreateTodo(TodoBase):
-    category: TodoCategoryEnum
-    pass
+    category_id: UUID
 
 
 class UpdateTodo(TodoBase):
-    pass
+    status_id:  Union[UUID, None] = None
 
 
-class Todo(TodoBase):
-    id: UUID
-    status: TodoStatusEnum
-    created_at: datetime
-    updated_at: Union[datetime, None] = None
+class Todo(BaseEntity, TodoBase):
+    status_id:  Union[UUID, None] = None
     owner_id: UUID
     owner: User
 

@@ -4,7 +4,33 @@ from sqlalchemy.orm import relationship
 from .database import Base
 from . import schemas
 
-# Todo model
+""" Status Model"""
+
+
+class Status(Base):
+    __tablename__ = "statuses"
+    id = Column(UUID, primary_key=True,
+                server_default=text("gen_random_uuid()"), nullable=False)
+    name = Column(String, unique=True, nullable=False)
+    created_at = Column(TIMESTAMP(timezone=True),
+                        server_default=text("now()"), nullable=False)
+    updated_at = Column(TIMESTAMP(timezone=True), nullable=True)
+
+
+""" ToDo Category Model"""
+
+
+class TodoCategory(Base):
+    __tablename__ = "todo_categories"
+    id = Column(UUID, primary_key=True,
+                server_default=text("gen_random_uuid()"), nullable=False)
+    name = Column(String, unique=True, nullable=False)
+    created_at = Column(TIMESTAMP(timezone=True),
+                        server_default=text("now()"), nullable=False)
+    updated_at = Column(TIMESTAMP(timezone=True), nullable=True)
+
+
+""" ToDo Model """
 
 
 class Todo(Base):
@@ -13,9 +39,11 @@ class Todo(Base):
                 server_default=text("gen_random_uuid()"), nullable=False)
     title = Column(String, nullable=False)
     description = Column(String, nullable=True)
-    category = Column(Enum(schemas.TodoCategoryEnum), nullable=False)
-    status = Column(Enum(schemas.TodoStatusEnum),
-                    default=schemas.TodoStatusEnum.Pending, nullable=False)
+    category_id = Column(UUID, ForeignKey(
+        "todo_categories.id"), nullable=False)
+    category = relationship("TodoCategory")
+    status_id = Column(UUID, ForeignKey("statuses.id"), nullable=False)
+    status = relationship("TodoStatus")
     created_at = Column(TIMESTAMP(timezone=True),
                         server_default=text("now()"), nullable=False)
     updated_at = Column(TIMESTAMP(timezone=True), nullable=True)
@@ -23,7 +51,8 @@ class Todo(Base):
         "users.id", ondelete="CASCADE"), nullable=False)
     owner = relationship("User")
 
-# User model
+
+""" User Model """
 
 
 class User(Base):
@@ -34,7 +63,7 @@ class User(Base):
     phone = Column(String, nullable=True)
     email = Column(String, unique=True, nullable=False)
     password = Column(LargeBinary, nullable=False)
-    is_active = Column(Boolean, server_default="TRUE", nullable=False)
+    status_id = Column(UUID, ForeignKey("statuses.id"), nullable=False)
     created_at = Column(TIMESTAMP(timezone=True),
                         server_default=text("now()"), nullable=False)
     updated_at = Column(TIMESTAMP(timezone=True), nullable=True)
