@@ -2,7 +2,6 @@ from datetime import datetime
 from typing import Union
 from pydantic import BaseModel, EmailStr
 from uuid import UUID
-from enum import Enum
 
 """  Base Entity """
 
@@ -65,22 +64,22 @@ class UserLogin(BaseModel):
     password: str
 
 
-""" ToDo Category Schemas """
+""" Category Schemas """
 
 
-class TodoCategoryBase(BaseModel):
+class CategoryBase(BaseModel):
     name: str
 
 
-class CreateTodoCategory(TodoCategoryBase):
+class CreateCategory(CategoryBase):
     pass
 
 
-class UpdateTodoCategory(TodoCategoryBase):
+class UpdateCategory(CategoryBase):
     pass
 
 
-class TodoCategory(BaseEntity, TodoCategoryBase):
+class Category(BaseEntity, CategoryBase):
     pass
 
     class Config:

@@ -1,8 +1,7 @@
 
-from sqlalchemy import TIMESTAMP, UUID, Boolean, Column, Enum, ForeignKey, String, text, LargeBinary
+from sqlalchemy import TIMESTAMP, UUID,Column, ForeignKey, String, text, LargeBinary
 from sqlalchemy.orm import relationship
 from .database import Base
-from . import schemas
 
 """ Status Model"""
 
@@ -17,11 +16,11 @@ class Status(Base):
     updated_at = Column(TIMESTAMP(timezone=True), nullable=True)
 
 
-""" ToDo Category Model"""
+""" Category Model"""
 
 
-class TodoCategory(Base):
-    __tablename__ = "todo_categories"
+class Category(Base):
+    __tablename__ = "categories"
     id = Column(UUID, primary_key=True,
                 server_default=text("gen_random_uuid()"), nullable=False)
     name = Column(String, unique=True, nullable=False)
@@ -40,10 +39,10 @@ class Todo(Base):
     title = Column(String, nullable=False)
     description = Column(String, nullable=True)
     category_id = Column(UUID, ForeignKey(
-        "todo_categories.id"), nullable=False)
-    category = relationship("TodoCategory")
+        "categories.id"), nullable=False)
+    category = relationship("Category")
     status_id = Column(UUID, ForeignKey("statuses.id"), nullable=False)
-    status = relationship("TodoStatus")
+    status = relationship("Status")
     created_at = Column(TIMESTAMP(timezone=True),
                         server_default=text("now()"), nullable=False)
     updated_at = Column(TIMESTAMP(timezone=True), nullable=True)
