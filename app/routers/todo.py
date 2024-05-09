@@ -38,11 +38,32 @@ def create_todo(
     db: Session = Depends(get_db),
     user: schemas.TokenData = Depends(oauth2.get_current_user),
 ):
-    todo = models.Todo(owner_id=user.id, **create_todo.model_dump())
 
-    db.add(todo)
-    db.commit()
-    db.refresh(todo)
+    todo_status = db.query(models.Status).filter(
+        models.Status.name == schemas.StatusEnum.New.value).first()
+
+    if todo_status is None:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            detail=f"Something went wrong")
+
+    todo_category = db.query(models.Category).filter(
+        models.Category.id == create_todo.category_id).first()
+
+    if todo_category is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Category with ID: {create_todo.category_id} not found")
+
+    todo = models.Todo(owner_id=user.id,
+                       status_id=todo_status.id, **create_todo.model_dump())
+
+    try:
+        db.add(todo)
+        db.commit()
+        db.refresh(todo)
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                            detail=f"Unable to perform specified operation")
 
     return todo
 

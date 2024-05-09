@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import Enum
 from typing import Union
 from pydantic import BaseModel, EmailStr
 from uuid import UUID
@@ -34,6 +35,28 @@ class Status(BaseEntity, StatusBase):
         form_attributes = True
 
 
+""" Role Schemas """
+
+
+class RoleBase(BaseModel):
+    name: str
+
+
+class CreateRole(RoleBase):
+    pass
+
+
+class UpdateRole(StatusBase):
+    pass
+
+
+class Role(BaseEntity, RoleBase):
+    pass
+
+    class Config:
+        form_attributes = True
+
+
 """ User Schema """
 
 
@@ -54,6 +77,7 @@ class UpdateUser(UserBase):
 class User(BaseEntity, UserBase):
     email: EmailStr
     status_id: UUID
+    role_id: UUID
 
     class Config:
         form_attributes = True
@@ -103,12 +127,16 @@ class UpdateTodo(TodoBase):
 
 
 class Todo(BaseEntity, TodoBase):
-    status_id:  Union[UUID, None] = None
+    status_id:  UUID
+    category_id:  UUID
     owner_id: UUID
     owner: User
 
     class Config:
         form_attributes = True
+
+
+""" Access Token Schemas """
 
 
 class Token(BaseModel):
@@ -119,3 +147,33 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     sub: str
     id: str
+
+
+""" Status Enum"""
+
+
+class StatusEnum(Enum):
+    New = "New"
+    Blocked = "Blocked"
+    Deleted = "Deleted"
+    Completed = "Completed"
+    Active = "Active"
+    Suspended = "Suspended"
+    Terminated = "Terminated"
+
+
+""" Category Enum"""
+
+
+class CategoryEnum(Enum):
+    Coding = "Coding"
+    Sports = "Sports"
+    Cooking = "Cooking"
+
+
+""" Role Enum"""
+
+
+class RoleEnum(Enum):
+    Admin = "Admin"
+    User = "User"

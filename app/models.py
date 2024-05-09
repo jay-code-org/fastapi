@@ -1,5 +1,5 @@
 
-from sqlalchemy import TIMESTAMP, UUID,Column, ForeignKey, String, text, LargeBinary
+from sqlalchemy import TIMESTAMP, UUID, Column, ForeignKey, String, text, LargeBinary
 from sqlalchemy.orm import relationship
 from .database import Base
 
@@ -21,6 +21,19 @@ class Status(Base):
 
 class Category(Base):
     __tablename__ = "categories"
+    id = Column(UUID, primary_key=True,
+                server_default=text("gen_random_uuid()"), nullable=False)
+    name = Column(String, unique=True, nullable=False)
+    created_at = Column(TIMESTAMP(timezone=True),
+                        server_default=text("now()"), nullable=False)
+    updated_at = Column(TIMESTAMP(timezone=True), nullable=True)
+
+
+""" Role Model"""
+
+
+class Role(Base):
+    __tablename__ = "roles"
     id = Column(UUID, primary_key=True,
                 server_default=text("gen_random_uuid()"), nullable=False)
     name = Column(String, unique=True, nullable=False)
@@ -63,6 +76,7 @@ class User(Base):
     email = Column(String, unique=True, nullable=False)
     password = Column(LargeBinary, nullable=False)
     status_id = Column(UUID, ForeignKey("statuses.id"), nullable=False)
+    role_id = Column(UUID, ForeignKey("roles.id"), nullable=False)
     created_at = Column(TIMESTAMP(timezone=True),
                         server_default=text("now()"), nullable=False)
     updated_at = Column(TIMESTAMP(timezone=True), nullable=True)
