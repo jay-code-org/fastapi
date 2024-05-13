@@ -43,7 +43,8 @@ def root(db: Session = Depends(database.get_db)):
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                                 detail=f"Something went wrong")
 
-        new_user = {"email": "", "full_name": "", "phone": ""}
+        new_user = {"email": "admin@fast.com",
+                    "full_name": "Administrator", "phone": "01234567"}
         new_user.update({"password": utils.hash_password(
             "1234"), "status_id": user_status.id, "role_id": user_role.id})
 
