@@ -1,24 +1,25 @@
 version: "3"
 services:
   api:
-    build: .
+    image: jayjunior/todo-fastapi
     ports:
       - 8000:8000
     # This line syncs code after changes
-    volumes:
-      - ./:/usr/src/app
+    # volumes:
+    #   - ./:/usr/src/app
     # env_file:
     #     - ./.env
     environment:
-      - DATABASE_HOST=postgres
-      - DATABASE_PORT=5432
-      - DATABASE_PASSWORD=postgres
-      - DATABASE_NAME=fastapi
-      - DATABASE_USERNAME=postgres
-      - JWT_SECRET_KEY=09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7
-      - JWT_ALGORITHM=HS256
-      - JWT_EXPIRES_MINUTES=30
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload    
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_PORT=${DATABASE_PORT}
+      - DATABASE_PASSWORD={DATABASE_PASSWORD}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_USERNAME=${DATABASE_USERNAME}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - JWT_ALGORITHM=${JWT_ALGORITHM}
+      - JWT_EXPIRES_MINUTES=${JWT_EXPIRES_MINUTES}
+    # This command exists in Dockerfile
+    # command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload    
     depends_on:
       - postgres
 
