@@ -4,8 +4,7 @@ from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException, Depends, status, Response
 from sqlalchemy.orm import Session
 
-from .. import models, schemas, oauth2
-from ..database import get_db
+from .. import models, schemas, oauth2, database
 
 router = APIRouter(prefix="/todos", tags=["Todos"])
 
@@ -14,7 +13,7 @@ router = APIRouter(prefix="/todos", tags=["Todos"])
 
 @router.get("/", response_model=list[schemas.Todo], status_code=status.HTTP_200_OK)
 def get_todos(
-    db: Session = Depends(get_db),
+    db: Session = Depends(database.get_db),
     user: schemas.TokenData = Depends(oauth2.get_current_user),
     limit: int = 10,
     skip: int = 0,
@@ -35,7 +34,7 @@ def get_todos(
 @router.post("/", response_model=schemas.Todo, status_code=status.HTTP_201_CREATED)
 def create_todo(
     create_todo: schemas.CreateTodo,
-    db: Session = Depends(get_db),
+    db: Session = Depends(database.get_db),
     user: schemas.TokenData = Depends(oauth2.get_current_user),
 ):
 
@@ -72,7 +71,7 @@ def create_todo(
 @router.get("/{id}", response_model=schemas.Todo, status_code=status.HTTP_200_OK)
 def get_todo(
     id: UUID,
-    db: Session = Depends(get_db),
+    db: Session = Depends(database.get_db),
     user: schemas.TokenData = Depends(oauth2.get_current_user),
 ):
     todo = db.query(models.Todo).filter(models.Todo.id == id).first()
@@ -92,7 +91,7 @@ def get_todo(
 def update_todo(
     id: UUID,
     update_todo: schemas.UpdateTodo,
-    db: Session = Depends(get_db),
+    db: Session = Depends(database.get_db),
     user: schemas.TokenData = Depends(oauth2.get_current_user),
 ):
     todo_query = db.query(models.Todo).filter(models.Todo.id == id)
@@ -127,7 +126,7 @@ def update_todo(
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_todo(
     id: UUID,
-    db: Session = Depends(get_db),
+    db: Session = Depends(database.get_db),
     user: schemas.TokenData = Depends(oauth2.get_current_user),
 ):
 

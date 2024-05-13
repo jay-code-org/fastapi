@@ -50,7 +50,7 @@ def create_user(create_user: schemas.CreateUser, db: Session = Depends(database.
 
 
 @router.put('/{id}', response_model=schemas.User, status_code=status.HTTP_200_OK)
-def update_user(id: UUID, update_user: schemas.UpdateUser, db: Session = Depends(get_db), user: schemas.TokenData = Depends(oauth2.get_current_user)):
+def update_user(id: UUID, update_user: schemas.UpdateUser, db: Session = Depends(database.get_db), user: schemas.TokenData = Depends(oauth2.get_current_user)):
 
     user = db.query(models.User).filter(models.User.id == id)
 
