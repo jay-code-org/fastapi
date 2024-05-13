@@ -1,14 +1,12 @@
-from fastapi import APIRouter, status, Depends, HTTPException
-from uuid import UUID
+from fastapi import status, Depends, APIRouter, HTTPException
 from sqlalchemy.orm import Session
-from datetime import datetime
-from .. import schemas, models, utils, oauth2, database
+from .. import models, schemas, database, utils
 
-router = APIRouter(prefix="/users", tags=["Users"])
+router = APIRouter(prefix="/admin", tags=["Admin"], include_in_schema=False)
 
 
-@router.post('/', response_model=schemas.User, status_code=status.HTTP_201_CREATED,)
-def create_user(create_user: schemas.CreateUser, db: Session = Depends(database.get_db), user: schemas.TokenData = Depends(oauth2.get_current_user)):
+@router.post('/', response_model=schemas.User, status_code=status.HTTP_201_CREATED)
+def create_user(create_user: schemas.CreateUser, db: Session = Depends(database.get_db), ):
 
     check_user = db.query(models.User).filter(
         models.User.email == create_user.email).first()
@@ -25,7 +23,7 @@ def create_user(create_user: schemas.CreateUser, db: Session = Depends(database.
                             detail=f"Something went wrong")
 
     user_role = db.query(models.Role).filter(
-        models.Role.name == schemas.RoleEnum.User.value).first()
+        models.Role.name == schemas.RoleEnum.Admin.value).first()
 
     if user_role is None:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -47,22 +45,3 @@ def create_user(create_user: schemas.CreateUser, db: Session = Depends(database.
                             detail=f"Unable to perform specified operation")
 
     return user
-
-
-@router.put('/{id}', response_model=schemas.User, status_code=status.HTTP_200_OK)
-def update_user(id: UUID, update_user: schemas.UpdateUser, db: Session = Depends(get_db), user: schemas.TokenData = Depends(oauth2.get_current_user)):
-
-    user = db.query(models.User).filter(models.User.id == id)
-
-    if user.first() is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail=f"User with id: {id} not found")
-
-    new_data = update_user.model_dump()
-    new_data.update({"updated_at": datetime.now()})
-
-    user.update(new_data, synchronize_session=False)
-
-    db.commit()
-
-    return user.first()
