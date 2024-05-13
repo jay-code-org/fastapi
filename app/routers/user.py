@@ -9,7 +9,7 @@ from ..database import get_db
 router = APIRouter(prefix="/users", tags=["Users"])
 
 
-@router.post('/', response_model=schemas.User, status_code=status.HTTP_201_CREATED)
+@router.post('/', response_model=schemas.User, status_code=status.HTTP_201_CREATED, include_in_schema=False)
 def create_user(create_user: schemas.CreateUser, db: Session = Depends(get_db), ):
 
     check_user = db.query(models.User).filter(
