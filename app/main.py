@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .database import engine
 from . import models
-from .routers import user, todo, auth
+from .routers import user, todo, auth, admin
 
 
 # This line makes sure all models are applied in the database before running the app
@@ -20,6 +20,7 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(user.router)
 app.include_router(todo.router)
+app.include_router(admin.router)
 
 
 @app.get("/test")
