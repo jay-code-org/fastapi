@@ -22,7 +22,7 @@ app.include_router(user.router, prefix="/api")
 app.include_router(todo.router, prefix="/api")
 
 
-@app.get("/sync")
+@app.get("/api/sync")
 def root(db: Session = Depends(database.get_db)):
     check_user = db.query(models.User).filter(
         models.User.email == 'admin@fast.com').first()
