@@ -17,9 +17,9 @@ app.add_middleware(
     allow_headers=['*']
 )
 
-app.include_router(auth.router)
-app.include_router(user.router)
-app.include_router(todo.router)
+app.include_router(auth.router, prefix="/api")
+app.include_router(user.router, prefix="/api")
+app.include_router(todo.router, prefix="/api")
 
 
 @app.get("/sync")
