@@ -8,7 +8,18 @@ from .routers import user, todo, auth
 # This line makes sure all models are applied in the database before running the app
 models.Base.metadata.create_all(bind=database.engine)
 
-app = FastAPI()
+app = FastAPI(
+    title="TODO Rest API",
+    description="This is a simple Rest API for users to manage their daily plan",
+    version="1.0.0",
+    docs_url="/documentation",
+    redoc_url="/redoc_docs",
+    openapi_url="/openapi.json",
+    contact={
+        "name": "Support Team",
+        "email": "support@todoapi.com",
+    },
+)
 
 app.add_middleware(
     CORSMiddleware,
