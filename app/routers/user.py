@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from datetime import datetime
 from .. import schemas, models, utils, oauth2, database
 
-router = APIRouter(prefix="/users", tags=["Users"])
+router = APIRouter(prefix="/api/users", tags=["Users"])
 
 
 @router.post('/', response_model=schemas.User, status_code=status.HTTP_201_CREATED,)

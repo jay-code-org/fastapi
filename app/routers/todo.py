@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from .. import models, schemas, oauth2, database
 
-router = APIRouter(prefix="/todos", tags=["Todos"])
+router = APIRouter(prefix="/api/todos", tags=["Todos"])
 
 # Get Todo List
 
