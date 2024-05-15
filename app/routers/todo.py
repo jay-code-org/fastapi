@@ -31,7 +31,7 @@ def get_todos(
 # Create Todo
 
 
-@router.post("/", response_model=schemas.Todo, status_code=status.HTTP_201_CREATED)
+@router.post("/da", response_model=schemas.Todo, status_code=status.HTTP_201_CREATED)
 def create_todo(
     create_todo: schemas.CreateTodo,
     db: Session = Depends(database.get_db),
