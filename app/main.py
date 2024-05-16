@@ -69,4 +69,4 @@ def root(db: Session = Depends(database.get_db)):
             db.rollback()
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                                 detail=f"Unable to perform specified operation")
-    return {"message": "Synchronized successfully!"}
+    return {"message": "Thank You. Synchronization completed!"}
